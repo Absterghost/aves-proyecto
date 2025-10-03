@@ -63,37 +63,41 @@ export default function Georutas() {
 
   useEffect(() => {
     const cargarRutas = async () => {
-      const archivos = ["ecoparquealcazaresarenillo.geojson"];
+      try {
+        // Leer index.json
+        const indexRes = await fetch("/rutas/index.json");
+        const indexData = await indexRes.json();
 
-      const rutasCargadas = await Promise.all(
-        archivos.map(async (file, idx) => {
-          const res = await fetch(`/rutas/${file}`);
-          const data = await res.json();
-          console.log("GeoJSON cargado:", data);
+        // Cargar cada GeoJSON completo
+        const rutasCargadas = await Promise.all(
+          indexData.map(async (ruta, idx) => {
+            const res = await fetch(`/rutas/${ruta.archivo}`);
+            const data = await res.json();
+            const feature = data.features[0];
 
-          // Tomamos solo la primera feature del archivo (o puedes iterar si hay varias)
-          const feature = data.features[0];
+            const coords =
+              feature.geometry.type === "LineString"
+                ? feature.geometry.coordinates.map(([lng, lat]) => [lat, lng])
+                : [];
 
-          const coords =
-            feature.geometry.type === "LineString"
-              ? feature.geometry.coordinates.map(([lng, lat]) => [lat, lng])
-              : [];
+            return {
+              id: idx + 1,
+              nombre: feature.properties.name || `Ruta ${idx + 1}`,
+              terreno: feature.properties.terreno || "Mixto",
+              kmText: feature.properties.km || "N/A",
+              aves: feature.properties.aves || "No definido",
+              horario: feature.properties.horario || "Cualquier hora",
+              descripcion: feature.properties.descripcion || "Sin descripción",
+              coords,
+              distancia: calcularDistancia(coords), // en metros
+            };
+          })
+        );
 
-          return {
-            id: idx + 1,
-            nombre: feature.properties.name || `Ruta ${idx + 1}`,
-            terreno: feature.properties.terreno || "Mixto",
-            kmText: feature.properties.km || "N/A",
-            aves: feature.properties.aves || "No definido",
-            horario: feature.properties.horario || "Cualquier hora",
-            descripcion: feature.properties.descripcion || "Sin descripción",
-            coords,
-            distancia: calcularDistancia(coords), // en metros
-          };
-        })
-      );
-
-      setRutas(rutasCargadas);
+        setRutas(rutasCargadas);
+      } catch (error) {
+        console.error("Error cargando rutas:", error);
+      }
     };
 
     cargarRutas();
@@ -165,7 +169,8 @@ export default function Georutas() {
             <strong>Terreno:</strong> {rutaSeleccionada.terreno}
           </p>
           <p className="text-sm mb-1">
-            <strong>Aves:</strong> {rutaSeleccionada.aves.join ? rutaSeleccionada.aves.join(", ") : rutaSeleccionada.aves}
+            <strong>Aves:</strong>{" "}
+            {rutaSeleccionada.aves.join ? rutaSeleccionada.aves.join(", ") : rutaSeleccionada.aves}
           </p>
           <p className="text-sm mb-1">
             <strong>Horario ideal:</strong> {rutaSeleccionada.horario}

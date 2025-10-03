@@ -12,13 +12,19 @@ import Register from "./pages/Register";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
 
+import SonidoGlobal from "./components/SonidoGlobal";
+import FondoAnimado from "./components/FondoAnimado";
+
 function App() {
   return (
     <AuthProvider>
       <Router>
-        <div className="flex">
+        <SonidoGlobal />
+        <FondoAnimado />
+
+        <div className="flex relative z-10">
           <Sidebar />
-          <main className="flex-1 ml-0 md:ml-64 p-4">
+          <main className="flex-1 ml-0 md:ml-64 p-4 relative z-20">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/ecoalas" element={<EcoAlas />} />
