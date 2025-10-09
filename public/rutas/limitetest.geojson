@@ -1,0 +1,21 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Limite Test"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [-75.52, 5.07],
+          [-75.51, 5.07],
+          [-75.51, 5.08],
+          [-75.52, 5.08],
+          [-75.52, 5.07]
+        ]
+      }
+    }
+  ]
+}

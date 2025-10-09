@@ -7,22 +7,23 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "update:rutas": "node generarIndexRutas.js"
   },
   "dependencies": {
     "axios": "^1.12.1",
     "gsap": "^3.13.0",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.542.0",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "react-leaflet": "^5.0.0",
     "react-router-dom": "^7.8.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
-    "@types/react": "^19.1.10",
-    "@types/react-dom": "^19.1.7",
+    "@types/react": "^18.2.7",
+    "@types/react-dom": "^18.2.4",
     "@vitejs/plugin-react": "^5.0.0",
     "autoprefixer": "^10.4.21",
     "eslint": "^9.33.0",
