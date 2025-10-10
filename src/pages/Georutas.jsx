@@ -124,7 +124,7 @@ export default function Georutas() {
 
           {/* Punto principal */}
           <Marker position={[5.07, -75.52]}>
-            <Popup>📍 Punto principal en Manizales</Popup>
+            <Popup>📍 Manizales</Popup>
           </Marker>
 
           {/* Límite de Caldas */}
@@ -148,7 +148,7 @@ export default function Georutas() {
             <>
               <Polyline
                 positions={rutaSeleccionada.coords}
-                pathOptions={{ color: "blue", weight: 4 }}
+                pathOptions={{ color: "blue", weight: 4, dashArray: "4,9",}}
               />
               <MapAutoFit coords={rutaSeleccionada.coords} />
             </>
