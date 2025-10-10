@@ -1,4 +1,3 @@
-// src/components/ChatBox.jsx
 import { useState } from "react";
 import colibriImg from "../assets/colibri.png";
 
@@ -9,6 +8,7 @@ export default function ChatBox() {
   const [input, setInput] = useState("");
   const [abierto, setAbierto] = useState(true);
   const [cargando, setCargando] = useState(false);
+  const [iaOn, setIaOn] = useState(true); // Botón para activar/desactivar IA
 
   const enviarMensaje = async () => {
     if (!input.trim()) return;
@@ -22,16 +22,18 @@ export default function ChatBox() {
       const res = await fetch("http://localhost:5000/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: input }),
+        body: JSON.stringify({ message: input, iaOn }),
       });
       const data = await res.json();
+
+      // 🔹 Respuesta en una sola burbuja
       setMensajes((prev) => [...prev, { texto: data.reply, de: "colibri" }]);
     } catch (error) {
       setMensajes((prev) => [
         ...prev,
-        { texto: "⚠️ Error al conectar con la IA local.", de: "colibri" },
+        { texto: "⚠️ Error al conectar con el servidor.", de: "colibri" },
       ]);
-      console.error("Error Ollama:", error);
+      console.error("Error en ChatBox:", error);
     } finally {
       setCargando(false);
     }
@@ -41,7 +43,6 @@ export default function ChatBox() {
     if (e.key === "Enter") enviarMensaje();
   };
 
-  // Botón minimizado del chat, ubicado encima del icono de sonido
   if (!abierto)
     return (
       <button
@@ -60,13 +61,19 @@ export default function ChatBox() {
     >
       <div className="flex justify-between items-center p-3 border-b">
         <h4 className="font-bold">🌿 EcoChat</h4>
-        <button
-          onClick={() => setAbierto(false)}
-          title="Minimizar chat"
-        >
-          ➖
-        </button>
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={() => setIaOn(!iaOn)}
+            className={`px-2 py-1 rounded ${iaOn ? "bg-blue-600 text-white" : "bg-gray-300 text-black"}`}
+          >
+            {iaOn ? "IA ON" : "IA OFF"}
+          </button>
+          <button onClick={() => setAbierto(false)} title="Minimizar chat">
+            ➖
+          </button>
+        </div>
       </div>
+
       <div className="flex-1 overflow-y-auto p-3 space-y-2">
         {mensajes.map((m, idx) => (
           <div
@@ -91,6 +98,7 @@ export default function ChatBox() {
         ))}
         {cargando && <div className="text-green-500">Colibrí está pensando...</div>}
       </div>
+
       <div className="flex border-t p-3">
         <input
           type="text"

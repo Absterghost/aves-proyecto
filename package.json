@@ -11,12 +11,17 @@
     "update:rutas": "node generarIndexRutas.js"
   },
   "dependencies": {
-    "axios": "^1.12.1",
+    "axios": "^1.12.2",
     "cors": "^2.8.5",
+    "express": "^5.1.0",
     "framer-motion": "^12.23.22",
+    "gpt-3-encoder": "^1.1.4",
     "gsap": "^3.13.0",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.542.0",
+    "node-fetch": "^3.3.2",
+    "openai": "^6.3.0",
+    "pdf-parse": "^1.1.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-leaflet": "^4.2.1",

@@ -1,33 +1,117 @@
+// backend/server.js
 import express from "express";
+import fs from "fs";
+import path from "path";
 import cors from "cors";
-import axios from "axios";
+import fetch from "node-fetch";
+import { leerPDF, chunkTexto } from "./procesarDocs.js";
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Ruta principal del chat
-app.post("/chat", async (req, res) => {
-  const { message } = req.body; // <-- debe coincidir con el frontend
+// Activar/desactivar IA
+let IA_ON = true;
 
+// Carpeta de chunks
+const CHUNKS_DIR = path.join(process.cwd(), "documentos_chunks");
+
+let documentosChunks = {};
+if (fs.existsSync(CHUNKS_DIR)) {
+  const archivos = fs.readdirSync(CHUNKS_DIR).filter(f => f.endsWith(".json"));
+  for (const archivo of archivos) {
+    const ruta = path.join(CHUNKS_DIR, archivo);
+    try {
+      documentosChunks[archivo] = JSON.parse(fs.readFileSync(ruta, "utf-8"));
+    } catch (err) {
+      console.error(`❌ Error cargando ${archivo}:`, err.message);
+    }
+  }
+  console.log(`🔍 ${Object.keys(documentosChunks).length} archivos de chunks cargados.`);
+} else {
+  console.warn("⚠️ No existe la carpeta 'documentos_chunks'. Corre procesarDocs.js primero.");
+}
+
+// Buscar en chunks
+function buscarEnChunks(query) {
+  const resultados = [];
+  for (const [archivo, chunks] of Object.entries(documentosChunks)) {
+    chunks.forEach((chunk, idx) => {
+      if (chunk.toLowerCase().includes(query.toLowerCase())) {
+        resultados.push({ archivo, chunkIndex: idx + 1, texto: chunk });
+      }
+    });
+  }
+  return resultados;
+}
+
+// Consultar Ollama (chat completions)
+async function obtenerRespuestaIA(pregunta) {
+  if (!IA_ON) return null;
   try {
-    // Enviamos el mensaje al modelo Llama 3 de Ollama
-    const response = await axios.post("http://localhost:11434/api/generate", {
-      model: "llama3",
-      prompt: message,
-      stream: false,
+    const res = await fetch("http://localhost:11434/v1/chat/completions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "llama3", // modelo correcto
+        messages: [
+          { role: "system", content: "Eres un experto en aves  y siempre respondes en español." },
+          { role: "user", content: pregunta }
+        ],
+        max_tokens: 1500,
+        temperature: 0.2
+      })
     });
 
-    const reply = response.data.response; // <-- se llamará 'reply'
-    res.json({ reply });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Error al comunicarse con Ollama" });
+    const data = await res.json();
+    console.log("Respuesta cruda de Ollama:", JSON.stringify(data, null, 2));
+
+    // Extraer texto
+    if (data?.choices?.[0]?.message?.content) return data.choices[0].message.content;
+    if (data?.completion) return data.completion;
+
+    return "⚠️ La IA no respondió correctamente.";
+  } catch (err) {
+    console.error("❌ Error consultando Ollama:", err);
+    return "⚠️ No se pudo obtener respuesta de la IA.";
   }
+}
+
+// Endpoint chat
+app.post("/chat", async (req, res) => {
+  const { message } = req.body;
+  if (!message) return res.json({ reply: "⚠️ No recibí tu mensaje." });
+
+  let reply = "";
+
+  // PDFs
+  const encontrados = buscarEnChunks(message);
+  if (encontrados.length > 0) {
+    reply += "📄 Información encontrada en PDFs:\n\n";
+    encontrados.forEach(e => {
+      reply += `- ${e.archivo} (chunk ${e.chunkIndex}): ${e.texto}\n\n`;
+    });
+  }
+
+  // IA
+  if (IA_ON) {
+    const ia = await obtenerRespuestaIA(message);
+    if (ia) reply = `🤖 Respuesta de la IA para: "${message}"\n${ia}\n\n` + reply;
+  }
+
+  if (!encontrados.length && !IA_ON) {
+    reply = "Lo siento, no encontré información en los PDFs ni en la IA.\n";
+  }
+
+  res.json({ reply });
 });
 
-// Iniciar servidor
-const PORT = 5000;
-app.listen(PORT, () => {
-  console.log(`Servidor de chat corriendo en http://localhost:${PORT}`);
+// Toggle IA
+app.post("/toggleIA", (req, res) => {
+  IA_ON = !IA_ON;
+  res.json({ estado: IA_ON ? "IA activada" : "IA desactivada" });
 });
+
+// Servidor
+const PORT = 5000;
+app.listen(PORT, () => console.log(`🚀 Servidor de chat corriendo en http://localhost:${PORT}`));
