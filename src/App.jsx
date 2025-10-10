@@ -28,7 +28,7 @@ function App() {
               <Route path="/zonotrichia" element={<Zonotrichia />} />
               <Route path="/verdesaber" element={<VerdeSaber />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/registro" element={<Register />} />
+              <Route path="/register" element={<Register />} />
             </Routes>
           </main>
         </div>
