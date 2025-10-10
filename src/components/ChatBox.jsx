@@ -3,13 +3,16 @@ import colibriImg from "../assets/colibri.png";
 
 export default function ChatBox() {
   const [mensajes, setMensajes] = useState([
-    { texto: "¡Hola! Soy tu asistente de EcoAlas 🐦. ¿Qué respuesta quieres que te cante?", de: "colibri" },
+    {
+      texto: "¡Hola! Soy tu asistente de EcoAlas 🐦. ¿Qué respuesta quieres que te cante?",
+      de: "colibri",
+    },
   ]);
   const [input, setInput] = useState("");
   const [abierto, setAbierto] = useState(true);
   const [cargando, setCargando] = useState(false);
-  const [iaOn, setIaOn] = useState(true); // Botón para activar/desactivar IA
 
+  // ✅ Ya no usamos IA ON/OFF
   const enviarMensaje = async () => {
     if (!input.trim()) return;
 
@@ -22,11 +25,11 @@ export default function ChatBox() {
       const res = await fetch("http://localhost:5000/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: input, iaOn }),
+        body: JSON.stringify({ message: input }), // ya no se envía iaOn
       });
       const data = await res.json();
 
-      // 🔹 Respuesta en una sola burbuja
+      // 🔹 Muestra la respuesta del backend
       setMensajes((prev) => [...prev, { texto: data.reply, de: "colibri" }]);
     } catch (error) {
       setMensajes((prev) => [
@@ -43,6 +46,7 @@ export default function ChatBox() {
     if (e.key === "Enter") enviarMensaje();
   };
 
+  // 🔹 Si el chat está cerrado, muestra solo el botón flotante
   if (!abierto)
     return (
       <button
@@ -54,6 +58,7 @@ export default function ChatBox() {
       </button>
     );
 
+  // 🔹 Caja del chat
   return (
     <div
       className="fixed bottom-14 right-14 w-80 bg-white rounded shadow-lg flex flex-col z-50"
@@ -61,24 +66,18 @@ export default function ChatBox() {
     >
       <div className="flex justify-between items-center p-3 border-b">
         <h4 className="font-bold">🌿 EcoChat</h4>
-        <div className="flex items-center space-x-2">
-          <button
-            onClick={() => setIaOn(!iaOn)}
-            className={`px-2 py-1 rounded ${iaOn ? "bg-blue-600 text-white" : "bg-gray-300 text-black"}`}
-          >
-            {iaOn ? "IA ON" : "IA OFF"}
-          </button>
-          <button onClick={() => setAbierto(false)} title="Minimizar chat">
-            ➖
-          </button>
-        </div>
+        <button onClick={() => setAbierto(false)} title="Minimizar chat">
+          ➖
+        </button>
       </div>
 
       <div className="flex-1 overflow-y-auto p-3 space-y-2">
         {mensajes.map((m, idx) => (
           <div
             key={idx}
-            className={`flex ${m.de === "colibri" ? "justify-start" : "justify-end"}`}
+            className={`flex ${
+              m.de === "colibri" ? "justify-start" : "justify-end"
+            }`}
           >
             {m.de === "colibri" && (
               <img
@@ -89,14 +88,18 @@ export default function ChatBox() {
             )}
             <div
               className={`px-3 py-2 rounded-lg max-w-[70%] ${
-                m.de === "colibri" ? "bg-green-100 text-green-900" : "bg-slate-200 text-slate-800"
+                m.de === "colibri"
+                  ? "bg-green-100 text-green-900"
+                  : "bg-slate-200 text-slate-800"
               }`}
             >
               {m.texto}
             </div>
           </div>
         ))}
-        {cargando && <div className="text-green-500">Colibrí está pensando...</div>}
+        {cargando && (
+          <div className="text-green-500">Colibrí está pensando...</div>
+        )}
       </div>
 
       <div className="flex border-t p-3">
