@@ -1,16 +1,25 @@
-const fs = require("fs");
-const path = require("path");
-const pdfParse = require("pdf-parse");
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+import { PDFExtract } from "pdf.js-extract";
+
+const pdfExtract = new PDFExtract();
+
+// Obtener __dirname en ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Carpeta donde pondrás tus PDFs
-const CARPETA_DOCS = path.join(__dirname, "../documentos");
+const CARPETA_DOCS = path.join(__dirname, "documentos");
 
 // Leer PDF y extraer texto
 async function leerPDF(ruta) {
   try {
-    const buffer = fs.readFileSync(ruta);
-    const data = await pdfParse(buffer);
-    return data.text;
+    const data = await pdfExtract.extract(ruta, {});
+    const texto = data.pages
+      .map(page => page.content.map(item => item.str).join(' '))
+      .join('\n');
+    return texto;
   } catch (error) {
     console.error(`❌ Error leyendo PDF ${ruta}:`, error.message);
     return "";
@@ -42,12 +51,15 @@ async function procesarDocumentos() {
     return;
   }
 
+  console.log(`📚 Encontrados ${archivos.length} archivo(s) PDF\n`);
+
   for (const archivo of archivos) {
     const ruta = path.join(CARPETA_DOCS, archivo);
-    console.log("Procesando:", archivo);
+    console.log("📄 Procesando:", archivo);
     const texto = await leerPDF(ruta);
-    if (!texto) {
-      console.warn(`⚠️ PDF ${archivo} no contiene texto legible.`);
+    
+    if (!texto || texto.trim().length === 0) {
+      console.warn(`⚠️  PDF ${archivo} no contiene texto legible.\n`);
       continue;
     }
 
@@ -55,17 +67,17 @@ async function procesarDocumentos() {
     console.log(`✅ ${archivo} dividido en ${chunks.length} chunks.`);
 
     // Guardar los chunks en JSON
-    const salidaDir = path.join(__dirname, "../documentos_chunks");
+    const salidaDir = path.join(__dirname, "documentos_chunks");
     if (!fs.existsSync(salidaDir)) fs.mkdirSync(salidaDir, { recursive: true });
     const salida = path.join(salidaDir, archivo + ".json");
     fs.writeFileSync(salida, JSON.stringify(chunks, null, 2), "utf-8");
-    console.log(`   → Chunks guardados en ${salida}`);
+    console.log(`   → Chunks guardados en ${salida}\n`);
   }
+  
+  console.log("🎉 ¡Proceso completado!");
 }
 
-// Ejecutar si se corre directamente
-if (require.main === module) {
-  procesarDocumentos();
-}
+// Ejecutar
+procesarDocumentos().catch(console.error);
 
-module.exports = { leerPDF, chunkTexto, procesarDocumentos };
+export { leerPDF, chunkTexto, procesarDocumentos };
