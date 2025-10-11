@@ -5,31 +5,31 @@ import { useNavigate } from "react-router-dom";
 export default function Register() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [message, setMessage] = useState("");
   const { register } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (username.trim().length < 3) {
-      setMessage("🟡 El nombre de usuario debe tener al menos 3 caracteres");
+    if (username.trim().length < 6) {
+      setMessage("🟡 El nombre de usuario debe tener al menos 6 caracteres");
       return;
     }
-    if (password.length < 6) {
-      setMessage("🟡 La contraseña debe tener al menos 6 caracteres");
+    if (password.length < 8) {
+      setMessage("🟡 La contraseña debe tener al menos 8 caracteres");
       return;
     }
     if (password !== confirmPassword) {
       setMessage("🟡 Las contraseñas no coinciden");
       return;
     }
-    const result = register(username, password);
+    const result = await register(username, password);
     setMessage(result.message);
     if (result.success) {
       setTimeout(() => navigate("/login"), 1500);
     }
-  };
+};
 
   return (
     <div className="h-screen bg-[url('src/assets/FondoRegistro.jpg')] bg-cover bg-center flex items-center justify-center">
@@ -55,22 +55,29 @@ export default function Register() {
           className="w-full p-2 border border-emerald-300 rounded focus:outline-none focus:ring-2 focus:ring-emerald-500 transition mb-3"
           required
         />
-        <input
-          type="password"
-          placeholder="Contraseña"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-2 border border-emerald-300 rounded focus:outline-none focus:ring-2 focus:ring-emerald-500 transition mb-4"
-          required
-        />
-        <input
-          type="password"
-          placeholder="Confirmar contraseña"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          className="w-full p-2 border border-emerald-300 rounded focus:outline-none focus:ring-2 focus:ring-emerald-500 transition mb-4"
-          required
-        />
+
+        <div className="relative mb-4">
+          <input
+            type="password"
+            placeholder="Contraseña"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full p-2 border border-emerald-300 rounded focus:outline-none focus:ring-2 focus:ring-emerald-500 transition"
+            required
+          />
+        </div>
+
+        <div className="relative mb-4">
+          <input
+            type="password"
+            placeholder="Confirmar contraseña"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            className="w-full p-2 border border-emerald-300 rounded focus:outline-none focus:ring-2 focus:ring-emerald-500 transition"
+            required
+          />
+        </div>
+
         <button
           type="submit"
           className="w-full bg-emerald-600 text-white py-2 rounded hover:bg-emerald-700 transition"
@@ -81,5 +88,7 @@ export default function Register() {
     </div>
   );
 }
+
+
 
 

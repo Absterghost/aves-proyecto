@@ -20,17 +20,26 @@ export function AuthProvider({ children }) {
   }, []);
 
   // Registrar usuario
-  const register = (username, password) => {
-    const users = JSON.parse(localStorage.getItem("users")) || [];
-    const exists = users.find((u) => u.username === username);
-    if (exists) {
-      return { success: false, message: "El usuario ya existe" };
+  async function register(username, password) {
+    try {
+      const response = await fetch("http://localhost:4000/usuarios/registro", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        return { success: false, message: data.mensaje || "Error al registrar" };
+      }
+
+      return { success: true, message: data.mensaje };
+    } catch (error) {
+      console.error("Error en el registro:", error);
+      return { success: false, message: "Error de conexión con el servidor" };
     }
-    const newUser = { username, password };
-    users.push(newUser);
-    localStorage.setItem("users", JSON.stringify(users));
-    return { success: true, message: "Usuario registrado correctamente" };
-  };
+  }
 
   // Iniciar sesión
   const login = (username, password) => {
@@ -58,3 +67,4 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   );
 }
+
