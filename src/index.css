@@ -1,0 +1,31 @@
+html {
+  scroll-behavior: smooth;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .swiper-button-prev,
+  .swiper-button-next {
+    @apply bg-slate-800/50 text-white rounded-full w-12 h-12 after:text-xl after:font-bold transition-colors duration-300;
+  }
+  .swiper-button-prev:hover,
+  .swiper-button-next:hover {
+    @apply bg-emerald-500/80;
+  }
+  .swiper-button-prev {
+    @apply left-4;
+  }
+  .swiper-button-next {
+    @apply right-4;
+  }
+
+  .swiper-pagination-bullet {
+    @apply bg-white/60 w-3 h-3 transition-colors duration-300;
+  }
+  .swiper-pagination-bullet-active {
+    @apply bg-emerald-400 scale-110;
+  }
+}
