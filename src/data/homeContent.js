@@ -7,12 +7,12 @@ import { BookOpen, Map, Users, Leaf, Bird, Image, Shield } from 'lucide-react';
 
 export const homeContent = {
   heroSection: { // Añadido para evitar el error de undefined
-    title: 'Avess: Un Vuelo por la Biodiversidad',
-    description: 'Una plataforma interactiva para explorar, aprender y maravillarse con la increíble diversidad de aves en nuestro territorio.',
+    title: 'Aves Caldas',
+    description: '',
   },
   welcomeSection: {
-    title: 'Bienvenidos a Avess',
-    description: 'Un proyecto dedicado a la exploración, documentación y conservación de la rica avifauna de nuestro territorio. Nuestra plataforma ofrece herramientas para que tanto aficionados como expertos puedan descubrir y aprender sobre las especies que nos rodean. Sumérgete en un mundo de conocimiento, explora rutas de avistamiento y únete a nuestra comunidad de investigación.',
+    title: 'Introducción',
+    description: 'El semillero de investigación “Aves Caldas” de la Tecnoacademia es un espacio académico dedicado al estudio, observación y conservación de las aves del departamento de Caldas. Nuestro propósito es fomentar el interés por la investigación científica y la educación ambiental, promoviendo el conocimiento de la biodiversidad regional y la importancia de proteger los ecosistemas que albergan esta valiosa riqueza natural',
     images: [], // Empty array to remove the gallery
   },
   explorerSections: [
