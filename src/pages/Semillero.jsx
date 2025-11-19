@@ -1,46 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import AnimatedSectionCard from '../components/AnimatedSectionCard';
-import { useAdmin } from '../context/AdminContext'; // Importar useAdmin
+import { useAuth } from '../context/AuthContext'; // Importar useAuth
 import { Link } from 'react-router-dom'; // Importar Link
 import { semilleroData as initialSemilleroData } from '../data/semilleroContent';
 
 export function Semillero({ openLightbox }) {
-  const { isAuthenticated } = useAdmin(); // Obtener estado de autenticación
-  const [semilleroItems, setSemilleroItems] = useState([]);
-
-  // Cargar datos desde localStorage o datos iniciales
-  useEffect(() => {
-    const storedItems = localStorage.getItem('semilleroItems');
-    if (storedItems) {
-      try {
-        const parsedItems = JSON.parse(storedItems);
-        setSemilleroItems(parsedItems.map((item, index) => ({
-          ...item,
-          id: item.id || index + 1,
-          images: item.images || [],
-          subsections: item.subsections || [],
-          isArchived: item.isArchived || false,
-        })));
-      } catch (e) {
-        console.error("Error parsing semilleroItems from localStorage", e);
-        setSemilleroItems(initialSemilleroData.map((item, index) => ({
-          ...item,
-          id: index + 1,
-          images: item.images || [],
-          subsections: item.subsections || [],
-          isArchived: false,
-        })));
-      }
-    } else {
-      setSemilleroItems(initialSemilleroData.map((item, index) => ({
-        ...item,
-        id: index + 1,
-        images: item.images || [],
-        subsections: item.subsections || [],
-        isArchived: false,
-      })));
-    }
-  }, []);
+  const { isAuthenticated } = useAuth(); // Obtener estado de autenticación
+  const semilleroItems = initialSemilleroData.map((item, index) => ({
+    ...item,
+    id: index + 1,
+    images: item.images || [],
+    subsections: item.subsections || [],
+    isArchived: false,
+  }));
 
   // Filtrar solo los elementos que NO están archivados para mostrar en la página pública
   const activeSemilleroItems = semilleroItems.filter(item => !item.isArchived);

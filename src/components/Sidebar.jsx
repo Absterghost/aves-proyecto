@@ -1,12 +1,13 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { Menu, X, Home, BookOpen, Map, Users, Image, Bird, Leaf, ChevronLeft, ChevronRight, Shield } from "lucide-react";
-import { useAdmin } from "../context/AdminContext"; // Importar useAdmin
+import { Menu, X, Home, BookOpen, Map, Users, Image, Bird, Leaf, ChevronLeft, ChevronRight, Shield, LogIn, UserPlus, LogOut } from "lucide-react";
+import { useAuth } from "../context/AuthContext"; // Importar useAuth
 
 export default function Sidebar({ isCollapsed, toggleSidebar, darkMode }) {
   const location = useLocation();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false); // Estado para el menú móvil
-  const { isAuthenticated } = useAdmin(); // Obtener estado de autenticación
+  const { isAuthenticated, currentUser, logout } = useAuth(); // Obtener estado de autenticación
 
   const links = [
     { path: "/", label: "Inicio", icon: <Home size={20} /> },
@@ -17,6 +18,12 @@ export default function Sidebar({ isCollapsed, toggleSidebar, darkMode }) {
     { path: "/zonotrichia", label: "Zonotrichia", icon: <Bird size={20} /> },
     { path: "/verdesaber", label: "Verde Saber", icon: <Leaf size={20} /> },
   ];
+
+  const handleLogout = () => {
+    logout();
+    setOpen(false); // Close sidebar on mobile after logout
+    navigate('/'); // Redirect to home page
+  };
 
   return (
     <>
@@ -60,7 +67,7 @@ export default function Sidebar({ isCollapsed, toggleSidebar, darkMode }) {
           </button>
         </div>
 
-        {/* Links */}
+        {/* Links principales */}
         <nav className="flex-1 space-y-2 px-2">
           {links.map((link) => (
             <Link
@@ -69,7 +76,7 @@ export default function Sidebar({ isCollapsed, toggleSidebar, darkMode }) {
               onClick={() => setOpen(false)}
               className={`flex items-center gap-3 px-4 py-2 rounded transition-colors ${isCollapsed ? 'justify-center' : ''} ${ 
                 location.pathname === link.path
-                  ? "bg-cyan-500 text-white font-semibold"
+                  ? "bg-emerald-500 text-white font-semibold"
                   : darkMode ? "hover:bg-gray-700" : "hover:bg-gray-100"
               }`}
             >
@@ -77,23 +84,68 @@ export default function Sidebar({ isCollapsed, toggleSidebar, darkMode }) {
               {!isCollapsed && <span>{link.label}</span>}
             </Link>
           ))}
-          
-          <Link
-            to={isAuthenticated ? "/admin/semillero" : "/login"}
-            onClick={() => setOpen(false)}
-            className={`flex items-center gap-3 px-4 py-2 rounded transition-colors ${isCollapsed ? 'justify-center' : ''} ${ 
-              location.pathname.startsWith('/admin') || location.pathname.startsWith('/login')
-                ? "bg-cyan-500 text-white font-semibold"
-                : darkMode ? "hover:bg-gray-700" : "hover:bg-gray-100"
-            }`}
-          >
-            <Shield size={20} />
-            {!isCollapsed && <span>Dashboard</span>}
-          </Link>
         </nav>
 
+        {/* Sección de autenticación y admin */}
+        <div className="mt-auto border-t border-gray-700/50 py-4 px-2">
+          {!isAuthenticated ? (
+            <>
+              <Link
+                to="/login"
+                onClick={() => setOpen(false)}
+                className={`flex items-center gap-3 px-4 py-2 rounded transition-colors ${isCollapsed ? 'justify-center' : ''} ${ 
+                  location.pathname === '/login'
+                    ? "bg-emerald-500 text-white font-semibold"
+                    : darkMode ? "hover:bg-gray-700" : "hover:bg-gray-100"
+                }`}
+              >
+                <LogIn size={20} />
+                {!isCollapsed && <span>Iniciar Sesión</span>}
+              </Link>
+              <Link
+                to="/register"
+                onClick={() => setOpen(false)}
+                className={`flex items-center gap-3 px-4 py-2 rounded transition-colors ${isCollapsed ? 'justify-center' : ''} ${ 
+                  location.pathname === '/register'
+                    ? "bg-emerald-500 text-white font-semibold"
+                    : darkMode ? "hover:bg-gray-700" : "hover:bg-gray-100"
+                }`}
+              >
+                <UserPlus size={20} />
+                {!isCollapsed && <span>Registrarse</span>}
+              </Link>
+            </>
+          ) : (
+            <>
+              {currentUser.isAdmin && (
+                <Link
+                  to="/admin/semillero"
+                  onClick={() => setOpen(false)}
+                  className={`flex items-center gap-3 px-4 py-2 rounded transition-colors ${isCollapsed ? 'justify-center' : ''} ${ 
+                    location.pathname.startsWith('/admin')
+                      ? "bg-emerald-500 text-white font-semibold"
+                      : darkMode ? "hover:bg-gray-700" : "hover:bg-gray-100"
+                  }`}
+                >
+                  <Shield size={20} />
+                  {!isCollapsed && <span>Admin Dashboard</span>}
+                </Link>
+              )}
+              <button
+                onClick={handleLogout}
+                className={`flex items-center gap-3 w-full px-4 py-2 rounded transition-colors ${isCollapsed ? 'justify-center' : ''} ${ 
+                  darkMode ? "hover:bg-gray-700" : "hover:bg-gray-100"
+                }`}
+              >
+                <LogOut size={20} />
+                {!isCollapsed && <span>Cerrar Sesión</span>}
+              </button>
+            </>
+          )}
+        </div>
+
         {/* Footer fijo */}
-        <div className="border-t mt-6 py-3 px-4 flex items-center gap-2">
+        <div className="border-t mt-auto py-3 px-4 flex items-center gap-2 border-gray-700/50">
           <Leaf className="text-emerald-400" size={16} />
           {!isCollapsed && (
             <div className="text-sm">

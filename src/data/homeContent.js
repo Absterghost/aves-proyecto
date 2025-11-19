@@ -12,7 +12,7 @@ export const homeContent = {
   },
   welcomeSection: {
     title: 'Introducción',
-    description: 'El semillero de investigación “Aves Caldas” de la Tecnoacademia es un espacio académico dedicado al estudio, observación y conservación de las aves del departamento de Caldas. Nuestro propósito es fomentar el interés por la investigación científica y la educación ambiental, promoviendo el conocimiento de la biodiversidad regional y la importancia de proteger los ecosistemas que albergan esta valiosa riqueza natural',
+    description: 'El semillero de investigación “Aves Caldas” de la Tecnoacademia es un espacio académico dedicado al estudio, observación y conservación de las aves del departamento de Caldas. Nuestro propósito es fomentar el interés por la investigación científica y la educación ambiental, promoviendo el conocimiento de la biodiversidad regional y la importancia de proteger los ecosistemas que albergan esta valiosa riqueza natural.',
     images: [], // Empty array to remove the gallery
   },
   explorerSections: [

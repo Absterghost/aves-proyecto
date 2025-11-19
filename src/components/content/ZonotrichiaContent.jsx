@@ -9,6 +9,9 @@ import dscn0187 from '../../assets/Zonotrichia/DSCN0187.jpg';
 import dscn0201 from '../../assets/Zonotrichia/DSCN0201.jpg';
 import img5625 from '../../assets/Zonotrichia/IMG_5625.JPG';
 import img7548 from '../../assets/Zonotrichia/IMG_7548.jpg';
+import zono from '../../assets/zonotrichia/zono.jpg';
+import zonootri from '../../assets/zonotrichia/zonootri.jpg';
+import zonot from '../../assets/zonotrichia/zonot.jpg';
 
 const sectionsData = [
   {
@@ -76,7 +79,8 @@ const sectionsData = [
   },
   {
     title: 'Importancia ecológica',
-    image: null,
+    image: zono,
+    alt: 'Zonotrichia capensis en un entorno natural',
     content: [
       'El Zonotrichia capensis cumple roles ecológicos clave:',
       '<ul><li>Control biológico de insectos.</li><li>Dispersión de semillas.</li><li>Indicador biológico del grado de perturbación del paisaje: su presencia en ambientes urbanos demuestra su adaptabilidad, pero una disminución en zonas rurales podría indicar alteraciones en el ecosistema.</li></ul>',
@@ -84,7 +88,8 @@ const sectionsData = [
   },
   {
     title: 'Amenazas y conservación',
-    image: null,
+    image: zonootri,
+    alt: 'Zonotrichia capensis en un área urbana',
     content: [
       'Aunque no se encuentra en categoría de amenaza (según la UICN: Preocupación menor LC), enfrenta varios desafíos locales:',
       '<ul><li>Contaminación acústica (interfiere en su comunicación y comportamiento).</li><li>Fragmentación del hábitat rural.</li><li>Uso de agroquímicos que reducen la disponibilidad de insectos.</li></ul>',
@@ -93,7 +98,8 @@ const sectionsData = [
   },
   {
     title: 'Dato científico interesante',
-    image: null,
+    image: zonot,
+    alt: 'Primer plano de un Zonotrichia capensis',
     content: [
       'Investigaciones realizadas en el Eje Cafetero (incluyendo Manizales y Villamaría) han demostrado que los copetones modifican su canto para adaptarse al ruido del tráfico urbano, un fenómeno de plasticidad acústica que revela su capacidad de ajuste frente a la presión humana. Esto lo convierte en un excelente modelo para estudios de ecología urbana, comunicación animal y conservación acústica.',
     ],
@@ -117,11 +123,11 @@ const ContentSection = ({ section, index, onImageClick }) => {
   return (
     <section className="my-12 md:my-20">
       <div className={`flex flex-col md:flex-row items-center gap-10 ${!isImageLeft ? 'md:flex-row-reverse' : ''}`}>
-        <div className="w-full md:w-1/2">
+        <div className="w-full md:w-1/2" style={{height: '30rem'}}>
           <img 
             src={section.image} 
             alt={section.alt}
-            className="rounded-lg shadow-2xl object-contain w-full h-80 transform hover:scale-105 transition-transform duration-300 cursor-pointer"
+            className="rounded-lg shadow-2xl object-cover w-full h-full transform hover:scale-105 transition-transform duration-300 cursor-pointer"
             onClick={() => onImageClick(section.image)}
           />
         </div>

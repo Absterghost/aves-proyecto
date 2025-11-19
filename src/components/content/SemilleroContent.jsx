@@ -22,55 +22,16 @@ export function SemilleroContent() {
     isArchived: false, // Nuevo campo para archivar
   });
 
-  // Cargar datos desde localStorage o datos iniciales
+  // Cargar datos iniciales
   useEffect(() => {
-    const storedItems = localStorage.getItem('semilleroItems');
-    if (storedItems) {
-      try {
-        const parsedItems = JSON.parse(storedItems);
-        setSemilleroItems(parsedItems.map((item, index) => ({
-          ...item,
-          id: item.id || index + 1,
-          images: item.images || [],
-          subsections: item.subsections || [],
-          isArchived: item.isArchived || false, // Asegurarse de que isArchived exista
-        })));
-      } catch (e) {
-        console.error("Error parsing semilleroItems from localStorage", e);
-        setSemilleroItems(initialSemilleroData.map((item, index) => ({
-          ...item,
-          id: index + 1,
-          images: item.images || [],
-          subsections: item.subsections || [],
-          isArchived: false,
-        })));
-      }
-    } else {
-      setSemilleroItems(initialSemilleroData.map((item, index) => ({
-        ...item,
-        id: index + 1,
-        images: item.images || [],
-        subsections: item.subsections || [],
-        isArchived: false,
-      })));
-    }
-  }, []); // Se ejecuta solo una vez al montar el componente
-
-  // Guardar datos en localStorage cada vez que semilleroItems cambie
-  useEffect(() => {
-    if (semilleroItems.length > 0) {
-      try {
-        localStorage.setItem('semilleroItems', JSON.stringify(semilleroItems));
-        console.log("Datos guardados en localStorage.");
-      } catch (e) {
-        console.error("Error guardando semilleroItems en localStorage. Podría estar lleno.", e);
-        alert("Advertencia: No se pudieron guardar todos los datos. El almacenamiento local del navegador podría estar lleno. Por favor, considera eliminar algunos elementos o contacta al administrador.");
-      }
-    } else if (localStorage.getItem('semilleroItems')) {
-      localStorage.removeItem('semilleroItems');
-      console.log("localStorage de semilleroItems limpiado.");
-    }
-  }, [semilleroItems]); // Se ejecuta cada vez que semilleroItems cambia
+    setSemilleroItems(initialSemilleroData.map((item, index) => ({
+      ...item,
+      id: index + 1,
+      images: item.images || [],
+      subsections: item.subsections || [],
+      isArchived: false,
+    })));
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

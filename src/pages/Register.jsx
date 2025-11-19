@@ -1,30 +1,38 @@
 import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Bird, User, Lock, Loader2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate, Link } from 'react-router-dom';
-import { Bird, User, Lock } from 'lucide-react';
 
-const Login = () => {
+const Register = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { login, isAdmin } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { register } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
     setError('');
-    const isLoggedIn = login(username, password);
-    if (isLoggedIn) {
-      // After login, use a short timeout to allow context to update
-      setTimeout(() => {
-        if (isAdmin) {
-          navigate('/admin/semillero');
-        } else {
-          navigate('/'); // Redirect normal users to home
-        }
-      }, 100);
-    } else {
-      setError('Credenciales incorrectas. Inténtalo de nuevo.');
+    
+    if (!username || !password) {
+      setError('Por favor, completa todos los campos.');
+      return;
+    }
+    if (password.length < 6) {
+        setError('La contraseña debe tener al menos 6 caracteres.');
+        return;
+    }
+    
+    setIsSubmitting(true);
+    try {
+      await register(username, password);
+      alert('¡Registro exitoso! Ahora puedes iniciar sesión.');
+      navigate('/login');
+    } catch (err) {
+      setError(err.message || 'Ocurrió un error durante el registro.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -34,11 +42,11 @@ const Login = () => {
         <div className="bg-gray-800 border border-gray-700 rounded-2xl shadow-2xl p-8">
           <div className="text-center mb-8">
             <Bird className="mx-auto h-12 w-12 text-emerald-400" />
-            <h1 className="text-3xl font-bold mt-4">Iniciar Sesión</h1>
-            <p className="text-gray-400 mt-2">Bienvenido de nuevo.</p>
+            <h1 className="text-3xl font-bold mt-4">Crear una Cuenta</h1>
+            <p className="text-gray-400 mt-2">Únete a la comunidad de observadores de aves.</p>
           </div>
           
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleRegister} className="space-y-6">
             <div className="relative">
                 <label htmlFor="username" className="sr-only">Usuario</label>
                 <User className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500" />
@@ -50,6 +58,7 @@ const Login = () => {
                     className="w-full bg-gray-900 text-white pl-12 pr-4 py-3 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
                     placeholder="Nombre de usuario"
                     required
+                    disabled={isSubmitting}
                 />
             </div>
             
@@ -64,6 +73,7 @@ const Login = () => {
                     className="w-full bg-gray-900 text-white pl-12 pr-4 py-3 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
                     placeholder="Contraseña"
                     required
+                    disabled={isSubmitting}
                 />
             </div>
 
@@ -72,18 +82,20 @@ const Login = () => {
             <div>
               <button
                 type="submit"
-                className="w-full bg-emerald-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-emerald-500 transition-transform duration-300 ease-in-out hover:scale-[1.02] shadow-lg"
+                className="w-full flex justify-center items-center bg-emerald-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-emerald-500 transition-transform duration-300 ease-in-out hover:scale-[1.02] shadow-lg disabled:bg-gray-500"
+                disabled={isSubmitting}
               >
-                Ingresar
+                {isSubmitting && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
+                Registrarse
               </button>
             </div>
           </form>
 
           <div className="text-center mt-6">
             <p className="text-sm text-gray-400">
-              ¿No tienes una cuenta?{' '}
-              <Link to="/register" className="font-medium text-emerald-400 hover:text-emerald-500">
-                Regístrate aquí
+              ¿Ya tienes una cuenta?{' '}
+              <Link to="/login" className="font-medium text-emerald-400 hover:text-emerald-500">
+                Inicia sesión aquí
               </Link>
             </p>
           </div>
@@ -93,4 +105,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAdmin } from '../context/AdminContext';
+import { useAuth } from '../context/AuthContext';
 // Eliminamos las importaciones de otros componentes de gestión
 import ContentManagement from '../components/ContentManagement';
 
 export default function AdminDashboard() {
-  const { adminUser, logout } = useAdmin();
+  const { currentUser, logout } = useAuth();
   const navigate = useNavigate();
   // La pestaña activa por defecto será directamente la de contenido
   const [activeTab, setActiveTab] = useState('content'); 
@@ -32,8 +32,8 @@ export default function AdminDashboard() {
         </button>
       </div>
       
-      {adminUser && (
-        <p className="text-lg mb-6">Bienvenido, <span className="font-semibold text-emerald-300">{adminUser.username}</span>.</p>
+      {currentUser && (
+        <p className="text-lg mb-6">Bienvenido, <span className="font-semibold text-emerald-300">{currentUser.username}</span>.</p>
       )}
 
       <div className="mb-8 border-b border-gray-700">
