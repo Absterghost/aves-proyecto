@@ -1,9 +1,9 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { Menu, X, Home, BookOpen, Map, Users, Image, Bird, Leaf, ChevronLeft, ChevronRight, Shield, LogIn, UserPlus, LogOut } from "lucide-react";
+import { Menu, X, Home, BookOpen, Map, Users, Image, Bird, Leaf, ChevronLeft, ChevronRight, Shield, LogIn, UserPlus, LogOut, Sun, Moon } from "lucide-react";
 import { useAuth } from "../context/AuthContext"; // Importar useAuth
 
-export default function Sidebar({ isCollapsed, toggleSidebar, darkMode }) {
+export default function Sidebar({ isCollapsed, toggleSidebar, darkMode, toggleDarkMode }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false); // Estado para el menú móvil
@@ -142,6 +142,20 @@ export default function Sidebar({ isCollapsed, toggleSidebar, darkMode }) {
               </button>
             </>
           )}
+
+          {/* Dark Mode Toggle - Movido al Sidebar */}
+          <button
+            onClick={toggleDarkMode}
+            className={`w-full flex items-center gap-3 px-4 py-2 rounded transition-colors mt-4 ${isCollapsed ? 'justify-center' : ''} ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'}`}
+            aria-label="Toggle dark mode"
+          >
+            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+            {!isCollapsed && (
+              <span className="font-semibold">
+                {darkMode ? 'Modo Claro' : 'Modo Oscuro'}
+              </span>
+            )}
+          </button>
         </div>
 
         {/* Footer fijo */}

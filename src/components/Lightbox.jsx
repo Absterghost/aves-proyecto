@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 
 export default function Lightbox({ data, onClose }) {
@@ -15,8 +16,10 @@ export default function Lightbox({ data, onClose }) {
         handleClose();
       }
     };
+    document.body.style.overflow = 'hidden';
     window.addEventListener('keydown', handleKeyDown);
     return () => {
+      document.body.style.overflow = 'auto';
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, []);
@@ -24,9 +27,9 @@ export default function Lightbox({ data, onClose }) {
   const isObject = typeof data === 'object' && data !== null;
   const imageUrl = isObject ? data.src : data;
 
-  return (
+  return createPortal(
     <div
-      className={`fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 transition-opacity duration-300 ease-in-out ${isClosing ? 'opacity-0' : 'opacity-100'}`}
+      className={`fixed inset-0 bg-black/80 backdrop-blur-sm z-[9999] flex items-center justify-center p-4 transition-opacity duration-300 ease-in-out ${isClosing ? 'opacity-0' : 'opacity-100'}`}
       onClick={handleClose}
     >
       <button
@@ -57,6 +60,7 @@ export default function Lightbox({ data, onClose }) {
           </div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

@@ -1,7 +1,7 @@
-import { UserCircle2, LogOut, Sun, Moon } from 'lucide-react';
+import { UserCircle2, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-export default function Header({ darkMode, toggleDarkMode, isAuthenticated, currentUser, logout }) {
+export default function Header({ isAuthenticated, currentUser, logout }) {
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -11,7 +11,7 @@ export default function Header({ darkMode, toggleDarkMode, isAuthenticated, curr
 
   return (
     <header
-      className={`sticky top-0 z-20 w-full p-3 transition-colors duration-300 ${darkMode ? 'bg-gray-800' : 'bg-white'} shadow-md`}
+      className={`sticky top-0 z-20 w-full p-3 transition-colors duration-300 bg-gray-800 shadow-md`}
     >
       {/* Top bar */}
       <div className="flex justify-end items-center">
@@ -30,19 +30,8 @@ export default function Header({ darkMode, toggleDarkMode, isAuthenticated, curr
             </button>
           </div>
         ) : (
-          // Opcional: Podríamos poner aquí un enlace a Iniciar Sesión/Registrarse si queremos duplicar el sidebar
-          // Por ahora, solo mostraremos el toggle de dark mode si no está autenticado
-          <></>
+          null
         )}
-        
-        {/* Dark Mode Toggle */}
-        <button
-          onClick={toggleDarkMode}
-          className={`ml-4 p-2 rounded-full transition-colors ${darkMode ? 'bg-gray-700 hover:bg-gray-600 text-gray-200' : 'bg-gray-200 hover:bg-gray-300 text-gray-800'}`}
-          aria-label="Toggle dark mode"
-        >
-          {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-        </button>
       </div>
     </header>
   );

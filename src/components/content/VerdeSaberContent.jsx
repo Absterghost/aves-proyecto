@@ -43,6 +43,7 @@ const VerdeSaberContent = () => {
     <div className="py-8 px-4">
       <div className="text-center mb-16">
         <h1 className="text-4xl md:text-5xl font-extrabold text-emerald-400 mb-8">Conecta con la Naturaleza en 3 Pasos</h1>
+        
         <div className="flex flex-col md:flex-row justify-center items-center gap-8 max-w-5xl mx-auto text-gray-300">
           
           <div className="flex items-center gap-4 p-4 rounded-lg bg-gray-800/50">
@@ -82,6 +83,39 @@ const VerdeSaberContent = () => {
           </div>
         ))}
       </div>
+
+      {/* Sección de la cartilla en la parte inferior */}
+      <div className="mt-16 text-center max-w-4xl mx-auto">
+        <h2 className="text-3xl font-bold text-white mb-6">Cartilla de Avistamiento de Aves</h2>
+        <p className="text-lg text-gray-400 mb-8">
+          Explora nuestra guía completa sobre las aves y el avistamiento de aves en la región. Disponible para ver en línea o descargar.
+        </p>
+        <div className="flex flex-col sm:flex-row justify-center gap-4">
+          <a 
+            href="/docs/Tecnoacademia-Cartilla-Final-aves.pdf" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 md:py-4 md:text-lg md:px-10 transition-colors duration-300 shadow-lg"
+          >
+            <svg className="-ml-1 mr-3 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" />
+              <path fillRule="evenodd" d="M.661 11.691A7 7 0 018 4a7 7 0 0111.339 7.691 6.953 6.953 0 01-1.076 1.15L20 16.5l-1.5 1.5-3.659-3.659a7.021 7.021 0 01-7.691 1.076A7 7 0 01.661 11.691zm1.705.516a5.001 5.001 0 007.868 1.141 5.001 5.001 0 001.141-7.868 5.001 5.001 0 00-7.868-1.141 5.001 5.001 0 00-1.141 7.868z" clipRule="evenodd" />
+            </svg>
+            Ver Cartilla
+          </a>
+          <a 
+            href="/docs/Tecnoacademia-Cartilla-Final-aves.pdf" 
+            download="Cartilla-Avistamiento-Aves.pdf"
+            className="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-emerald-600 bg-transparent hover:bg-emerald-600 hover:text-white md:py-4 md:text-lg md:px-10 transition-colors duration-300 shadow-lg border-emerald-600"
+          >
+            <svg className="-ml-1 mr-3 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414-1.414L9 9.586V3a1 1 0 112 0v6.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3z" clipRule="evenodd" />
+            </svg>
+            Descargar Cartilla
+          </a>
+        </div>
+      </div>
+
     </div>
   );
 };

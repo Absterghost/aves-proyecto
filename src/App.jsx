@@ -82,12 +82,11 @@ const AppContent = () => {
           isCollapsed={isSidebarCollapsed} 
           toggleSidebar={() => setSidebarCollapsed(!isSidebarCollapsed)}
           darkMode={darkMode}
+          toggleDarkMode={toggleDarkMode}
         />
         <div className={`flex flex-col flex-1 transition-all duration-300 ${isSidebarCollapsed ? 'md:ml-20' : 'md:ml-64'}`}>
           {/* Header always renders now, with user info conditional inside */}
           <Header 
-            darkMode={darkMode} 
-            toggleDarkMode={toggleDarkMode} 
             isAuthenticated={isAuthenticated} 
             currentUser={currentUser} 
             logout={logout} 

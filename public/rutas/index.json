@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "nombre": "Ecoparque Alcázares Arenillo",
+    "archivo": "ecoparquealcazaresarenillo.geojson"
+  },
+  {
+    "id": 2,
+    "nombre": "Ecoparque Los Yarumos",
+    "archivo": "ecoparquelosyarumos.geojson"
+  },
+  {
+    "id": 3,
+    "nombre": "Reserva Natural Río Blanco",
+    "archivo": "reservanaturalrioblanco.geojson"
+  },
+  {
+    "id": 4,
+    "nombre": "Recinto del Pensamiento",
+    "archivo": "recintodelpensamiento.geojson"
+  }
+]

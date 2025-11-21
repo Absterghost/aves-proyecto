@@ -1,0 +1,27 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Recinto del Pensamiento",
+        "descripcion": "Una hermosa ruta para conectar con la naturaleza y observar aves en el Recinto del Pensamiento.",
+        "aves": ["Barranquero", "Colibrí", "Tángara"],
+        "horario_ideal": "8:00 AM - 11:00 AM",
+        "dificultad": "Baja",
+        "imagen": "/src/assets/localidades/Recinto-de-Pensamietno.jpg"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [-75.4596014, 5.0334736],
+          [-75.4597963, 5.0337147],
+          [-75.4598097, 5.0337427],
+          [-75.4598164, 5.0337801],
+          [-75.4598117, 5.0338437],
+          [-75.4597624, 5.0340373]
+        ]
+      }
+    }
+  ]
+}
