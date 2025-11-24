@@ -6,40 +6,45 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "lint": "eslint .",
+    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "update:rutas": "node generarIndexRutas.js"
   },
   "dependencies": {
+    "@langchain/community": "0.0.70",
+    "@langchain/core": "0.1.77",
+    "@xenova/transformers": "^2.17.2",
     "axios": "^1.12.2",
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "framer-motion": "^12.23.22",
     "gpt-3-encoder": "^1.1.4",
     "gsap": "^3.13.0",
+    "langchain": "^0.1.27",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.542.0",
     "node-fetch": "^3.3.2",
     "openai": "^6.3.0",
     "pdf.js-extract": "^0.2.1",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-leaflet": "^4.2.1",
-    "react-router-dom": "^7.8.2"
+    "react-router-dom": "^6.15.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
     "@types/react": "^18.2.7",
     "@types/react-dom": "^18.2.4",
-    "@vitejs/plugin-react": "^5.0.0",
+    "@vitejs/plugin-react": "^4.7.0",
     "autoprefixer": "^10.4.21",
     "eslint": "^9.33.0",
+    "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.3.0",
     "nodemon": "^3.1.10",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.17",
-    "vite": "^7.1.2"
+    "vite": "^4.4.5"
   }
 }

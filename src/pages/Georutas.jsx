@@ -11,7 +11,9 @@ import {
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
-// Fix Leaflet icons
+// ====================
+// Corrección de íconos Leaflet
+// ====================
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl:
@@ -22,7 +24,9 @@ L.Icon.Default.mergeOptions({
     "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
 });
 
-// Auto-fit component
+// ====================
+// Componente para autoajustar el mapa a los límites
+// ====================
 function MapAutoFit({ coords }) {
   const map = useMap();
   useEffect(() => {
@@ -33,7 +37,9 @@ function MapAutoFit({ coords }) {
   return null;
 }
 
-// Convert coordinates to [lat, lng]
+// ====================
+// Función auxiliar para extraer coordenadas de geometrías GeoJSON
+// ====================
 function extraerCoords(geometry) {
   if (!geometry) return [];
   if (geometry.type === "LineString") {
@@ -48,12 +54,45 @@ function extraerCoords(geometry) {
   return [];
 }
 
+// ====================
+// Función para calcular la distancia total en km de una ruta
+// ====================
+function calcularDistancia(coords) {
+  if (!coords || coords.length < 2) return 0;
+
+  const R = 6371; // Radio de la Tierra en km
+  let distancia = 0;
+
+  for (let i = 0; i < coords.length - 1; i++) {
+    const [lat1, lon1] = coords[i];
+    const [lat2, lon2] = coords[i + 1];
+
+    const dLat = ((lat2 - lat1) * Math.PI) / 180;
+    const dLon = ((lon2 - lon1) * Math.PI) / 180;
+
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos((lat1 * Math.PI) / 180) *
+        Math.cos((lat2 * Math.PI) / 180) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    distancia += R * c;
+  }
+
+  return distancia; // en km
+}
+
+// ====================
+// Componente principal
+// ====================
 export default function Georutas() {
   const [rutas, setRutas] = useState([]);
   const [rutaSeleccionada, setRutaSeleccionada] = useState(null);
   const [limiteCaldas, setLimiteCaldas] = useState(null);
 
-  // Load all routes except the Caldas boundary
+  // Cargar todas las rutas (excepto el límite de Caldas)
   useEffect(() => {
     const cargarRutas = async () => {
       try {
@@ -67,15 +106,24 @@ export default function Georutas() {
             const feature = data.features[0];
             const coords = extraerCoords(feature.geometry);
 
+            // Calcular distancia si no está definida en properties
+            const distanciaCalculada = calcularDistancia(coords).toFixed(2);
+
             return {
               id: idx + 1,
               nombre: feature.properties.name || `Ruta ${idx + 1}`,
               coords,
+              descripcion:
+                feature.properties.descripcion || "Sin descripción disponible",
+              distancia:
+                feature.properties.distancia ||
+                `${distanciaCalculada} km`,
+              terreno: feature.properties.terreno || "No especificado",
+              dificultad: feature.properties.dificultad || "No indicada",
             };
           })
         );
 
-        // Filtra el límite
         const rutasSinLimite = rutasCargadas.filter(
           (r) => r.nombre !== "Limite Caldas"
         );
@@ -89,7 +137,7 @@ export default function Georutas() {
     cargarRutas();
   }, []);
 
-  // Load Caldas boundary directly
+  // Cargar el límite de Caldas
   useEffect(() => {
     const cargarLimite = async () => {
       try {
@@ -106,6 +154,9 @@ export default function Georutas() {
     cargarLimite();
   }, []);
 
+  // ====================
+  // Renderizado
+  // ====================
   return (
     <section>
       <h2 className="text-2xl font-bold mb-3">Georutas</h2>
@@ -138,7 +189,6 @@ export default function Georutas() {
                   dashArray: "6,6",
                 }}
               />
-              {/* Centrar el mapa sobre el límite al cargar */}
               <MapAutoFit coords={limiteCaldas.coords} />
             </>
           )}
@@ -148,13 +198,38 @@ export default function Georutas() {
             <>
               <Polyline
                 positions={rutaSeleccionada.coords}
-                pathOptions={{ color: "blue", weight: 4, dashArray: "4,9",}}
+                pathOptions={{
+                  color: "blue",
+                  weight: 4,
+                  dashArray: "4,9",
+                }}
               />
               <MapAutoFit coords={rutaSeleccionada.coords} />
             </>
           )}
         </MapContainer>
       </div>
+
+      {/* Información de la ruta seleccionada */}
+      {rutaSeleccionada && (
+        <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded shadow-sm">
+          <h3 className="font-semibold text-lg mb-1">
+            🗺️ {rutaSeleccionada.nombre}
+          </h3>
+          <p className="text-sm mb-1">
+            <strong>Descripción:</strong> {rutaSeleccionada.descripcion}
+          </p>
+          <p className="text-sm mb-1">
+            <strong>Distancia:</strong> {rutaSeleccionada.distancia}
+          </p>
+          <p className="text-sm mb-1">
+            <strong>Terreno:</strong> {rutaSeleccionada.terreno}
+          </p>
+          <p className="text-sm">
+            <strong>Dificultad:</strong> {rutaSeleccionada.dificultad}
+          </p>
+        </div>
+      )}
 
       {/* Leyenda */}
       <div className="mb-6 text-sm text-slate-700">
@@ -167,7 +242,11 @@ export default function Georutas() {
         {rutas.map((ruta) => (
           <div
             key={ruta.id}
-            className="p-4 bg-white rounded shadow cursor-pointer hover:bg-slate-50"
+            className={`p-4 rounded shadow cursor-pointer transition ${
+              rutaSeleccionada?.id === ruta.id
+                ? "bg-blue-100 border border-blue-300"
+                : "bg-white hover:bg-slate-50"
+            }`}
             onClick={() => setRutaSeleccionada(ruta)}
           >
             <h3 className="font-semibold">{ruta.nombre}</h3>

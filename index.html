@@ -1,13 +1,46 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React</title>
+    <title>EcoAlas - Aves de Caldas</title>
+    <script type="module">
+      // 🆕 Script de diagnóstico
+      console.log('📄 index.html cargado')
+      console.log('React disponible:', typeof React !== 'undefined')
+    </script>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div style="
+        display: flex; 
+        justify-content: center; 
+        align-items: center; 
+        height: 100vh; 
+        background: #f0fdf4;
+        flex-direction: column;
+        gap: 20px;
+      ">
+        <div style="
+          width: 60px;
+          height: 60px;
+          border: 4px solid #dcfce7;
+          border-top: 4px solid #16a34a;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+        "></div>
+        <h2 style="color: #166534; margin: 0;">🌿 Cargando EcoAlas...</h2>
+        <p style="color: #4b5563;">Si esto permanece, hay un problema con React</p>
+      </div>
+    </div>
     <script type="module" src="/src/main.jsx"></script>
+    
+    <style>
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    </style>
   </body>
 </html>
